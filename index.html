@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0b0b10">
+<title>SOLO CHEAT STORE</title>
+<style>
+:root{--bg:#090a0f;--panel:#141620;--line:#292d3a;--gold:#ffc928;--text:#f5f6fa;--muted:#a7adbd;--green:#36e58b}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:Arial,Helvetica,sans-serif}
+header{padding:18px 16px;background:#10111a;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:12px;position:sticky;top:0;z-index:5}
+.logo{font-size:20px;font-weight:900;letter-spacing:1px}.logo span{color:var(--gold)}.badge{font-size:11px;color:var(--green);border:1px solid #246f4c;padding:6px 8px;border-radius:20px}
+.hero{padding:28px 16px 22px;background:radial-gradient(ellipse at top right,#4a2b09 0%,#17131a 43%,#090a0f 78%);text-align:center}
+.hero h1{font-size:29px;margin:0 0 10px}.hero h1 span{color:var(--gold)}.hero p{color:var(--muted);font-size:14px;line-height:1.5;margin:0}
+.wrap{max-width:1000px;margin:auto;padding:0 13px 28px}.toolbar{display:flex;gap:10px;margin:18px 0}.toolbar input{width:100%;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:13px;color:white;font-size:15px;outline:none}
+h2{font-size:19px;margin:22px 0 13px}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:13px;overflow:hidden}.card img{width:100%;height:145px;object-fit:cover;background:#242632;display:block}.card-body{padding:12px}.card h3{font-size:14px;margin:0 0 9px}.price{color:var(--gold);font-size:20px;font-weight:800;margin:0 0 12px}.btn{width:100%;border:0;border-radius:8px;padding:12px;font-size:14px;font-weight:800;background:var(--gold);color:#15120a;cursor:pointer}.btn:active{transform:scale(.98)}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:13px;padding:15px;margin-top:17px}.panel p{color:var(--muted);font-size:13px;line-height:1.55}.upi{font-size:16px;font-weight:bold;color:var(--green);overflow-wrap:anywhere}.field{width:100%;margin:7px 0 12px;background:#0b0c12;border:1px solid #343847;color:white;border-radius:8px;padding:12px;font-size:14px}.small{font-size:12px;color:var(--muted)}.notice{background:#2a2110;border:1px solid #72591a;color:#ffe39a;padding:11px;border-radius:9px;font-size:12px;line-height:1.5}.cartrow{display:flex;justify-content:space-between;gap:10px;padding:10px 0;border-bottom:1px solid var(--line);font-size:13px}.remove{border:1px solid #704040;background:#2b171a;color:#ffb1b1;border-radius:6px;padding:5px 8px}
+footer{text-align:center;padding:22px 12px;color:var(--muted);font-size:12px;border-top:1px solid var(--line)}a{color:var(--gold)}
+@media(min-width:700px){.grid{grid-template-columns:repeat(4,minmax(0,1fr))}.card img{height:180px}.hero h1{font-size:36px}}
+</style>
+</head>
+<body>
+<header><div class="logo">SOLO <span>CHEAT</span></div><div class="badge">UPI PAYMENT ONLY</div></header>
+<section class="hero"><h1>FREE FIRE <span>ID STORE</span></h1><p>Browse available listings and choose an account.<br>Orders remain pending until payment is independently verified.</p></section>
+<main class="wrap">
+<div class="toolbar"><input id="search" type="search" placeholder="Search listings..." aria-label="Search listings"></div>
+<h2>🔥 Available Listings</h2>
+<div class="grid" id="products"></div>
+<section class="panel"><h2>🛒 Your Order</h2><div id="cart"><p>Your cart is empty. Choose a listing above.</p></div><div class="cartrow"><strong>Total</strong><strong id="total">₹0</strong></div></section>
+<section class="panel" id="payment">
+<h2>💳 UPI Payment & UTR Submission</h2>
+<p>UPI ID</p><div class="upi">deadmanxyasir@fam</div>
+<p>Pay the exact amount in your UPI app, then enter the UTR/reference number below. This demo page cannot verify a transaction or deliver account details automatically.</p>
+<div class="notice">Security notice: submitting a UTR does not prove payment. Your order will remain pending until the seller verifies the payment through their bank/UPI records. Never enter your UPI PIN or OTP on this website.</div>
+<label for="buyer">Your contact (optional)</label><input class="field" id="buyer" placeholder="Telegram username or contact">
+<label for="utr">UPI UTR / transaction reference</label><input class="field" id="utr" inputmode="numeric" maxlength="30" placeholder="Enter transaction reference">
+<button class="btn" id="submitOrder">Submit order for manual verification</button>
+<p id="status" role="status"></p>
+</section>
+<section class="panel"><h2>📩 Support</h2><p>Any problem? DM <strong>@yasirxyz</strong> on Telegram.</p></section>
+</main>
+<footer>SOLO CHEAT STORE · Unofficial fan-made listing site. Not affiliated with or endorsed by Garena.<br>Account transfers may be restricted by the game publisher's terms.</footer>
+<script>
+const items=[
+ {id:1,name:"Free Fire ID 1",price:850,img:"product1.jpg"},
+ {id:2,name:"Free Fire ID 2",price:450,img:"product2.jpg"},
+ {id:3,name:"Free Fire ID 3",price:4489,img:"product3.jpg"},
+ {id:4,name:"Free Fire ID 4",price:2739,img:"product4.jpg"}
+];
+let cart=[];
+const products=document.getElementById('products');
+function renderProducts(q=''){
+ products.innerHTML='';
+ const found=items.filter(x=>x.name.toLowerCase().includes(q.toLowerCase()));
+ if(!found.length){products.innerHTML='<p>No listings found.</p>';return;}
+ found.forEach(x=>{
+  const card=document.createElement('article');card.className='card';
+  const img=document.createElement('img');img.src=x.img;img.alt=x.name;img.loading='lazy';
+  img.onerror=()=>{img.style.display='none';};
+  const body=document.createElement('div');body.className='card-body';
+  const title=document.createElement('h3');title.textContent=x.name;
+  const price=document.createElement('p');price.className='price';price.textContent='₹'+x.price.toLocaleString('en-IN');
+  const btn=document.createElement('button');btn.className='btn';btn.textContent='Add to Order';btn.onclick=()=>{if(!cart.some(c=>c.id===x.id))cart.push(x);renderCart();document.getElementById('payment').scrollIntoView({behavior:'smooth'});};
+  body.append(title,price,btn);card.append(img,body);products.append(card);
+ });
+}
+function renderCart(){
+ const el=document.getElementById('cart');el.innerHTML='';
+ if(!cart.length){el.innerHTML='<p>Your cart is empty. Choose a listing above.</p>';}
+ cart.forEach(x=>{const row=document.createElement('div');row.className='cartrow';const label=document.createElement('span');label.textContent=x.name+' — ₹'+x.price.toLocaleString('en-IN');const b=document.createElement('button');b.className='remove';b.textContent='Remove';b.onclick=()=>{cart=cart.filter(c=>c.id!==x.id);renderCart();};row.append(label,b);el.append(row);});
+ document.getElementById('total').textContent='₹'+cart.reduce((s,x)=>s+x.price,0).toLocaleString('en-IN');
+}
+document.getElementById('search').addEventListener('input',e=>renderProducts(e.target.value));
+document.getElementById('submitOrder').addEventListener('click',()=>{
+ const status=document.getElementById('status');
+ const utr=document.getElementById('utr').value.trim();
+ if(!cart.length){status.textContent='Please choose a listing first.';return;}
+ if(!/^[A-Za-z0-9-]{8,30}$/.test(utr)){status.textContent='Enter a transaction reference between 8 and 30 letters/numbers. This format check does not verify payment.';return;}
+ const order={orderId:'SC-'+Date.now(),items:cart.map(x=>({name:x.name,price:x.price})),total:cart.reduce((s,x)=>s+x.price,0),utr,buyer:document.getElementById('buyer').value.trim(),submittedAt:new Date().toISOString(),status:'PENDING MANUAL VERIFICATION'};
+ const key='soloCheatDemoOrders';const orders=JSON.parse(localStorage.getItem(key)||'[]');orders.push(order);localStorage.setItem(key,JSON.stringify(orders));
+ status.textContent='Demo order '+order.orderId+' saved on this device as PENDING. It has NOT been sent to the seller, payment has NOT been verified, and no account details will be delivered automatically. Contact @yasirxyz with your order ID.';
+});
+renderProducts();renderCart();
+</script>
+</body>
+</html>
